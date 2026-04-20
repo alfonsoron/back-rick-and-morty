@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String                    @id @default(cuid())
+  role             String                    @default("user")
+  name             String
+  mail             String                    @unique
+  passwordHash     String
+  street           String
+  location         String
+  city             String
+  country          String
+  cp               String
+  phone            String
+  birthday         DateTime
+  date             DateTime                  @default(now())
+  updatedAt        DateTime                  @updatedAt
+  favoriteEpisodes FavoriteEpisode[]
+  episodeComments  EpisodeComment[]
+}
+
+model FavoriteEpisode {
+  id          String   @id @default(cuid())
+  episodeId   Int
+  name        String
+  episodeCode String
+  airDate     String
+  createdAt   DateTime @default(now())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, episodeId])
+}
+
+model EpisodeComment {
+  id        String   @id @default(cuid())
+  episodeId Int
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model EpisodeCommentSetting {
+  id              String   @id @default(cuid())
+  episodeId       Int      @unique
+  commentsEnabled Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
