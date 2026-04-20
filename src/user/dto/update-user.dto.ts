@@ -44,4 +44,8 @@ export class UpdateUserDto {
   @IsOptional()
   @IsDateString()
   birthday?: string;
+
+  @IsOptional()
+  @IsString()
+  photoUrl?: string;
 }

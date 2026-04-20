@@ -1,27 +1,27 @@
-type CommentRow = {
+type CommentWithUser = {
   id: string;
   episodeId: number;
   content: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   userId: string;
-  userName: string;
-  userMail: string;
-  userRole: string;
+  user: {
+    name: string;
+    mail: string;
+    role: string;
+  };
 };
 
-export function presentEpisodeComment(comment: CommentRow) {
+export function presentEpisodeComment(comment: CommentWithUser) {
   return {
     id: comment.id,
     episodeId: comment.episodeId,
+    userId: comment.userId,
     content: comment.content,
     createdAt: new Date(comment.createdAt).toISOString(),
     updatedAt: new Date(comment.updatedAt).toISOString(),
     user: {
-      id: comment.userId,
-      name: comment.userName,
-      mail: comment.userMail,
-      role: comment.userRole,
+      name: comment.user.name,
     },
   };
 }

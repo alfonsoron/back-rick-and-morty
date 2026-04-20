@@ -6,6 +6,7 @@ export function presentUser(user: User) {
     role: user.role,
     name: user.name,
     mail: user.mail,
+    photoUrl: user.photoUrl,
     address: {
       street: user.street,
       location: user.location,

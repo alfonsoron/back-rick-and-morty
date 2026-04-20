@@ -63,11 +63,11 @@ export class UserService {
       name: payload.name,
       mail: payload.mail,
       passwordHash,
-      street: payload.address.street,
-      location: payload.address.location,
-      city: payload.address.city,
-      country: payload.address.country,
-      cp: payload.address.cp,
+      street: payload.address?.street || '',
+      location: payload.address?.location || '',
+      city: payload.address?.city || '',
+      country: payload.address?.country || '',
+      cp: payload.address?.cp || '',
       phone: payload.phone,
       birthday: new Date(payload.birthday),
     };
@@ -89,11 +89,21 @@ export class UserService {
     }
 
     if (payload.address) {
-      data.street = payload.address.street;
-      data.location = payload.address.location;
-      data.city = payload.address.city;
-      data.country = payload.address.country;
-      data.cp = payload.address.cp;
+      if (payload.address.street !== undefined) {
+        data.street = payload.address.street;
+      }
+      if (payload.address.location !== undefined) {
+        data.location = payload.address.location;
+      }
+      if (payload.address.city !== undefined) {
+        data.city = payload.address.city;
+      }
+      if (payload.address.country !== undefined) {
+        data.country = payload.address.country;
+      }
+      if (payload.address.cp !== undefined) {
+        data.cp = payload.address.cp;
+      }
     }
 
     if (payload.phone !== undefined) {
@@ -102,6 +112,10 @@ export class UserService {
 
     if (payload.birthday !== undefined) {
       data.birthday = new Date(payload.birthday);
+    }
+
+    if (payload.photoUrl !== undefined) {
+      data.photoUrl = payload.photoUrl;
     }
 
     return data;

@@ -27,8 +27,8 @@ export class EpisodeCommentsController {
 
   @Get('detail/:commentId')
   @UseGuards(AuthTokenGuard)
-  findOne(@Param('commentId') commentId: string) {
-    const comment = this.episodeCommentsService.findById(commentId);
+  async findOne(@Param('commentId') commentId: string) {
+    const comment = await this.episodeCommentsService.findById(commentId);
 
     return successResponse('Episode comment fetched successfully', {
       comment: presentEpisodeComment(comment),
@@ -36,9 +36,11 @@ export class EpisodeCommentsController {
   }
 
   @Get('episode/:episodeId')
-  findAllByEpisode(@Param('episodeId', ParseIntPipe) episodeId: number) {
-    const comments = this.episodeCommentsService.findAllByEpisode(episodeId);
-    const settings = this.episodeCommentsService.getSettings(episodeId);
+  async findAllByEpisode(@Param('episodeId', ParseIntPipe) episodeId: number) {
+    const [comments, settings] = await Promise.all([
+      this.episodeCommentsService.findAllByEpisode(episodeId),
+      this.episodeCommentsService.getSettings(episodeId),
+    ]);
 
     return successResponse('Episode comments fetched successfully', {
       episodeId,
@@ -49,11 +51,11 @@ export class EpisodeCommentsController {
 
   @Post()
   @UseGuards(AuthTokenGuard)
-  create(
+  async create(
     @Req() request: AuthenticatedRequest,
     @Body() payload: CreateEpisodeCommentDto,
   ) {
-    const comment = this.episodeCommentsService.create(request.user, payload);
+    const comment = await this.episodeCommentsService.create(request.user, payload);
 
     return successResponse('Episode comment created successfully', {
       comment: presentEpisodeComment(comment),
@@ -62,12 +64,12 @@ export class EpisodeCommentsController {
 
   @Put(':commentId')
   @UseGuards(AuthTokenGuard)
-  update(
+  async update(
     @Param('commentId') commentId: string,
     @Req() request: AuthenticatedRequest,
     @Body() payload: UpdateEpisodeCommentDto,
   ) {
-    const comment = this.episodeCommentsService.update(commentId, request.user, payload);
+    const comment = await this.episodeCommentsService.update(commentId, request.user, payload);
 
     return successResponse('Episode comment updated successfully', {
       comment: presentEpisodeComment(comment),
@@ -77,8 +79,8 @@ export class EpisodeCommentsController {
   @Delete(':commentId')
   @UseGuards(AuthTokenGuard)
   @HttpCode(200)
-  remove(@Param('commentId') commentId: string, @Req() request: AuthenticatedRequest) {
-    this.episodeCommentsService.remove(commentId, request.user);
+  async remove(@Param('commentId') commentId: string, @Req() request: AuthenticatedRequest) {
+    await this.episodeCommentsService.remove(commentId, request.user);
 
     return successResponse('Episode comment removed successfully', {
       commentId,
@@ -87,12 +89,12 @@ export class EpisodeCommentsController {
 
   @Patch('settings/:episodeId')
   @UseGuards(AuthTokenGuard)
-  updateSettings(
+  async updateSettings(
     @Param('episodeId', ParseIntPipe) episodeId: number,
     @Req() request: AuthenticatedRequest,
     @Body() payload: UpdateEpisodeCommentSettingDto,
   ) {
-    const settings = this.episodeCommentsService.updateSettings(
+    const settings = await this.episodeCommentsService.updateSettings(
       episodeId,
       request.user,
       payload.commentsEnabled,
