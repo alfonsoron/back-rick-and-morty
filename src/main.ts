@@ -7,6 +7,16 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const port = Number(process.env.PORT ?? 3000);
 
+  app.enableCors({
+    origin: [
+      'http://localhost:4200',
+      'http://localhost:3000',
+      'https://rick-and-morty-ten-snowy.vercel.app',
+      process.env.FRONTEND_URL,
+    ].filter(Boolean),
+    credentials: true,
+  });
+
   app.setGlobalPrefix('api');
   app.useGlobalPipes(
     new ValidationPipe({

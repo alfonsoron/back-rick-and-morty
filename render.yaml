@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: rick-and-morty-api
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build && npx prisma generate
+    startCommand: npm run start:prod
+    envVars:
+      - key: DATABASE_URL
+        scope: build,runtime
+      - key: JWT_SECRET
+        scope: runtime
+      - key: JWT_EXPIRES_IN
+        scope: runtime
+      - key: NODE_ENV
+        value: production
