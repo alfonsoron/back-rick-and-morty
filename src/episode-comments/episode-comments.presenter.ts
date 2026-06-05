@@ -9,6 +9,7 @@ type CommentWithUser = {
     name: string;
     mail: string;
     role: string;
+    photoUrl?: string;
   };
 };
 
@@ -22,6 +23,7 @@ export function presentEpisodeComment(comment: CommentWithUser) {
     updatedAt: new Date(comment.updatedAt).toISOString(),
     user: {
       name: comment.user.name,
+      photoUrl: comment.user.photoUrl ?? '',
     },
   };
 }
